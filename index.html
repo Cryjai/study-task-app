@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AhCry study- manage tasks and study</title>
+    <meta name="description" content="AhCry - 專為ADHD/gifted學生設計的任務管理和學習應用">
+    <meta name="theme-color" content="#21808D">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="AhCry">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AhCry">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%2321808D'/><circle cx='35' cy='40' r='6' fill='white'/><circle cx='65' cy='40' r='6' fill='white'/><path d='M30 65 Q50 80 70 65' stroke='white' stroke-width='3' fill='none'/></svg>">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQWhDcnkgc3R1ZHktIG1hbmFnZSB0YXNrcyBhbmQgc3R1ZHkiLCJzaG9ydF9uYW1lIjoiQWhDcnkiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI0ZDRkNGOSIsInRoZW1lX2NvbG9yIjoiIzIxODA4RCIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MG5hSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY25JSFpwWlhkQ2IzZzlKekFnTUNBME1EQWdOREF3SnlCM2FXUjBhRDBuTkRBd0p5Qm9aV2xuYUhROUoNRFF3TUNjK1BHTnBjbU5zWlNCamVEMG5NakF3SnlCamVUMG5NakF3SnlCeVBTY3hOVEFuSUdacGJHdzlKenBqUlRZMlJUQmNSUzQrUEdOcGNtTnNaU0JqZUQwbk5qQW5JSE41UFNjMk1DZGNjajBuTVRBbklHWnBiR3c5SjNkb2FYUmxKeUF2UGdvPSIsInNpemVzIjoiNDAweDQwMCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#21808D',
+                        secondary: '#5E5240',
+                        background: '#FCFCF9',
+                        surface: '#FFFFD',
+                        text: '#13343B'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-background text-text">
+    
+    <!-- Login/Register Screen -->
+    <div id="authScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="card w-full max-w-md">
+            <div class="card__body text-center">
+                <div class="mb-8">
+                    <div class="w-20 h-20 mx-auto mb-4 bg-primary rounded-full flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" class="w-12 h-12 text-white">
+                            <circle cx="50" cy="50" r="40" fill="currentColor"/>
+                            <circle cx="35" cy="40" r="6" fill="white"/>
+                            <circle cx="65" cy="40" r="6" fill="white"/>
+                            <path d="M30 65 Q50 80 70 65" stroke="white" stroke-width="3" fill="none"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold mb-2">AhCry</h1>
+                    <p class="text-text-secondary">管理任務・一起學習・挑戰朋友</p>
+                </div>
+                
+                <div id="loginForm">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" class="form-control" placeholder="電郵地址" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="密碼" required>
+                    </div>
+                    <button id="loginBtn" class="btn btn--primary btn--full-width mb-4">登入</button>
+                    <button id="showRegisterBtn" class="btn btn--secondary btn--full-width">註冊新帳戶</button>
+                </div>
+                
+                <div id="registerForm" class="hidden">
+                    <div class="form-group">
+                        <input type="email" id="registerEmail" class="form-control" placeholder="電郵地址" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="registerUsername" class="form-control" placeholder="用戶名 (例：AhCry阿Cry)" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="registerPassword" class="form-control" placeholder="密碼" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="確認密碼" required>
+                    </div>
+                    <button id="registerBtn" class="btn btn--primary btn--full-width mb-4">註冊</button>
+                    <button id="showLoginBtn" class="btn btn--secondary btn--full-width">返回登入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Screen -->
+    <div id="appScreen" class="hidden">
+        <!-- Top Navigation -->
+        <nav class="bg-surface border-b border-border p-4 sticky top-0 z-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" class="w-6 h-6 text-white">
+                            <circle cx="50" cy="50" r="40" fill="currentColor"/>
+                            <circle cx="35" cy="40" r="6" fill="white"/>
+                            <circle cx="65" cy="40" r="6" fill="white"/>
+                            <path d="M30 65 Q50 80 70 65" stroke="white" stroke-width="3" fill="none"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold">AhCry</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-text-secondary">等級</span>
+                        <span id="userLevel" class="font-bold text-primary">15</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-text-secondary">金幣</span>
+                        <span id="userCoins" class="font-bold text-warning">1250</span>
+                    </div>
+                    <button id="logoutBtn" class="btn btn--outline btn--sm">登出</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex">
+            <!-- Sidebar -->
+            <div class="w-64 bg-surface border-r border-border min-h-screen p-4 hidden lg:block">
+                <nav class="space-y-2">
+                    <a href="#dashboard" class="nav-link active" data-view="dashboard">
+                        <span>📊</span> 主頁
+                    </a>
+                    <a href="#tasks" class="nav-link" data-view="tasks">
+                        <span>📝</span> 任務管理
+                    </a>
+                    <a href="#social" class="nav-link" data-view="social">
+                        <span>👥</span> 社交
+                    </a>
+                    <a href="#guilds" class="nav-link" data-view="guilds">
+                        <span>🏰</span> 公會
+                    </a>
+                    <a href="#study" class="nav-link" data-view="study">
+                        <span>📚</span> 學習室
+                    </a>
+                    <a href="#leaderboard" class="nav-link" data-view="leaderboard">
+                        <span>🏆</span> 排行榜
+                    </a>
+                    <a href="#profile" class="nav-link" data-view="profile">
+                        <span>👤</span> 個人檔案
+                    </a>
+                    <a href="#settings" class="nav-link" data-view="settings">
+                        <span>⚙️</span> 設定
+                    </a>
+                    <a href="#admin" class="nav-link admin-only hidden" data-view="admin">
+                        <span>🛠️</span> 管理面板
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 p-4 lg:p-6">
+                <!-- Dashboard View -->
+                <div id="dashboardView" class="view active">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- XP Progress Card -->
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">經驗值進度</h3>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm text-text-secondary">等級 <span id="currentLevel">15</span></span>
+                                    <span class="text-sm text-text-secondary"><span id="currentXP">2350</span> / <span id="nextLevelXP">3000</span> XP</span>
+                                </div>
+                                <div class="w-full bg-secondary rounded-full h-3">
+                                    <div id="xpProgress" class="bg-primary h-3 rounded-full transition-all duration-300" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Tasks -->
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">今日任務</h3>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-primary mb-2" id="todayTasksCount">2</div>
+                                    <div class="text-sm text-text-secondary">個任務等待完成</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Streak Counter -->
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">連續天數</h3>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-success mb-2" id="streakCount">7</div>
+                                    <div class="text-sm text-text-secondary">天連續完成任務</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Tasks -->
+                    <div class="card">
+                        <div class="card__body">
+                            <h3 class="text-lg font-bold mb-4">最近任務</h3>
+                            <div id="recentTasks" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks View -->
+                <div id="tasksView" class="view">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">任務管理</h2>
+                        <button id="createTaskBtn" class="btn btn--primary">
+                            <span>➕</span> 新增任務
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <div id="tasksList" class="space-y-4"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">任務統計</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between">
+                                        <span class="text-text-secondary">總任務數</span>
+                                        <span id="totalTasks" class="font-bold">2</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-secondary">已完成</span>
+                                        <span id="completedTasks" class="font-bold text-success">0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-secondary">進行中</span>
+                                        <span id="inProgressTasks" class="font-bold text-warning">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social View -->
+                <div id="socialView" class="view">
+                    <h2 class="text-2xl font-bold mb-6">社交</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">朋友列表</h3>
+                                <div class="space-y-3">
+                                    <div class="text-center text-text-secondary py-8">
+                                        <p>還沒有朋友喔！</p>
+                                        <button class="btn btn--primary mt-4">添加朋友</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">共享任務</h3>
+                                <div class="text-center text-text-secondary py-8">
+                                    <p>沒有共享任務</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guilds View -->
+                <div id="guildsView" class="view">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">公會</h2>
+                        <button id="createGuildBtn" class="btn btn--primary">
+                            <span>➕</span> 創建公會
+                        </button>
+                    </div>
+                    <div id="guildsList" class="space-y-4"></div>
+                </div>
+
+                <!-- Study View -->
+                <div id="studyView" class="view">
+                    <h2 class="text-2xl font-bold mb-6">學習室</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">活躍學習室</h3>
+                                <div id="studyRoomsList" class="space-y-3"></div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">學習計時器</h3>
+                                <div class="text-center">
+                                    <div class="text-4xl font-bold mb-4" id="studyTimer">25:00</div>
+                                    <div class="flex gap-2 justify-center">
+                                        <button id="startTimerBtn" class="btn btn--primary">開始</button>
+                                        <button id="pauseTimerBtn" class="btn btn--secondary">暫停</button>
+                                        <button id="resetTimerBtn" class="btn btn--outline">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard View -->
+                <div id="leaderboardView" class="view">
+                    <h2 class="text-2xl font-bold mb-6">排行榜</h2>
+                    <div class="card">
+                        <div class="card__body">
+                            <div id="leaderboardList" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile View -->
+                <div id="profileView" class="view">
+                    <h2 class="text-2xl font-bold mb-6">個人檔案</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card">
+                            <div class="card__body">
+                                <div class="text-center mb-6">
+                                    <div class="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <svg viewBox="0 0 100 100" class="w-12 h-12 text-white">
+                                            <circle cx="50" cy="50" r="40" fill="currentColor"/>
+                                            <circle cx="35" cy="40" r="6" fill="white"/>
+                                            <circle cx="65" cy="40" r="6" fill="white"/>
+                                            <path d="M30 65 Q50 80 70 65" stroke="white" stroke-width="3" fill="none"/>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-2" id="profileUsername">AhCry阿Cry</h3>
+                                    <p class="text-text-secondary">等級 <span id="profileLevel">15</span> 學神</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-text-secondary">總經驗值</span>
+                                        <span id="profileXP" class="font-bold">2350</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-secondary">金幣</span>
+                                        <span id="profileCoins" class="font-bold">1250</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-secondary">連續天數</span>
+                                        <span id="profileStreak" class="font-bold">7</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card__body">
+                                <h3 class="text-lg font-bold mb-4">成就徽章</h3>
+                                <div id="badgesList" class="grid grid-cols-2 gap-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings View -->
+                <div id="settingsView" class="view">
+                    <h2 class="text-2xl font-bold mb-6">設定</h2>
+                    <div class="card">
+                        <div class="card__body">
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold">深色模式</h3>
+                                        <p class="text-sm text-text-secondary">切換深色主題</p>
+                                    </div>
+                                    <button id="darkModeToggle" class="btn btn--outline">切換</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold">推送通知</h3>
+                                        <p class="text-sm text-text-secondary">接收任務提醒</p>
+                                    </div>
+                                    <button id="notificationToggle" class="btn btn--outline">開啟</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold">公開檔案</h3>
+                                        <p class="text-sm text-text-secondary">讓其他人查看你的檔案</p>
+                                    </div>
+                                    <button id="publicProfileToggle" class="btn btn--outline">開啟</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin View -->
+                <div id="adminView" class="view">
+                    <h2 class="text-2xl font-bold mb-6">管理面板</h2>
+                    <div class="card">
+                        <div class="card__body">
+                            <h3 class="text-lg font-bold mb-4">用戶管理</h3>
+                            <div id="usersList" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-2">
+            <div class="flex justify-around">
+                <button class="nav-btn active" data-view="dashboard">
+                    <span class="block text-xl">📊</span>
+                    <span class="text-xs">主頁</span>
+                </button>
+                <button class="nav-btn" data-view="tasks">
+                    <span class="block text-xl">📝</span>
+                    <span class="text-xs">任務</span>
+                </button>
+                <button class="nav-btn" data-view="social">
+                    <span class="block text-xl">👥</span>
+                    <span class="text-xs">社交</span>
+                </button>
+                <button class="nav-btn" data-view="study">
+                    <span class="block text-xl">📚</span>
+                    <span class="text-xs">學習</span>
+                </button>
+                <button class="nav-btn" data-view="profile">
+                    <span class="block text-xl">👤</span>
+                    <span class="text-xs">檔案</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Task Modal -->
+    <div id="createTaskModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="card w-full max-w-md">
+            <div class="card__body">
+                <h3 class="text-xl font-bold mb-4">新增任務</h3>
+                <form id="createTaskForm">
+                    <div class="form-group">
+                        <label class="form-label">任務標題</label>
+                        <input type="text" id="taskTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">描述</label>
+                        <textarea id="taskDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">截止日期</label>
+                        <input type="date" id="taskDueDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">隱私設定</label>
+                        <select id="taskPrivacy" class="form-control">
+                            <option value="private">私人</option>
+                            <option value="friends">朋友可見</option>
+                            <option value="public">公開</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">類別</label>
+                        <select id="taskCategory" class="form-control">
+                            <option value="學習">學習</option>
+                            <option value="考試">考試</option>
+                            <option value="作業">作業</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="btn btn--primary flex-1">創建任務</button>
+                        <button type="button" id="cancelTaskBtn" class="btn btn--outline flex-1">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
